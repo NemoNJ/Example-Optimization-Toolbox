@@ -1,0 +1,35 @@
+ตัวอย่างที่ 4: เชื่อมกับ dynamic system (คล้าย paper)
+หา kp, kd ที่ดีที่สุดสำหรับ PD controller ของระบบ 2nd order
+
+function demo_PD_optimization()
+
+    % Objective: minimize ITAE จาก simulation
+    fun = @(gains) simulate_and_get_ITAE(gains);
+
+    % initial guess และ bounds
+    x0 = [1.0, 1.0];       % [kp, kd]
+    lb = [0.01, 0.01];     % ค่าต่ำสุด
+    ub = [10,   10  ];     % ค่าสูงสุด
+
+    options = optimoptions('fmincon', 'Display', 'iter');
+    x_opt = fmincon(fun, x0, [], [], [], [], lb, ub, [], options);
+
+    disp(['kp optimal = ', num2str(x_opt(1))])
+    disp(['kd optimal = ', num2str(x_opt(2))])
+end
+
+function ITAE = simulate_and_get_ITAE(gains)
+    kp = gains(1);
+    kd = gains(2);
+
+    % สมการ: x'' = -kp*x - kd*x'  (PD controlled 2nd order)
+    ode_fun = @(t, x) [x(2); -kp*x(1) - kd*x(2)];
+
+    x0 = [1; 0];           % เริ่มที่ตำแหน่ง 1, velocity 0
+    tspan = [0, 20];
+
+    [t, x] = ode45(ode_fun, tspan, x0);
+
+    % คำนวณ ITAE = integral(|error| * t)
+    ITAE = trapz(t, abs(x(:,1)) .* t);
+end
