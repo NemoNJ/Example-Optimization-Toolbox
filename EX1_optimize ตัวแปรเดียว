@@ -1,0 +1,16 @@
+ตัวอย่างที่ 1: หาค่า minimum ของฟังก์ชันง่ายๆ
+สมมติอยากหาค่า x ที่ทำให้ f(x) = (x-3)² มีค่าน้อยที่สุด (คำตอบคือ x = 3)
+
+
+
+% กำหนด objective function
+fun = @(x) (x - 3)^2;
+
+% จุดเริ่มต้น (initial guess)
+x0 = 0;
+
+% หาค่า minimum
+x_opt = fminunc(fun, x0);
+
+disp(['คำตอบ x = ', num2str(x_opt)])   % ควรได้ประมาณ 3
+disp(['ค่าต่ำสุด f = ', num2str(fun(x_opt))])  % ควรได้ประมาณ 0
