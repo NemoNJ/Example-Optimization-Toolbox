@@ -1,0 +1,18 @@
+ตัวอย่างที่ 3: มี constraint (ใช้ fmincon)
+หาค่า x1, x2 ที่ทำให้ f น้อยที่สุด แต่ต้องมี x1 + x2 ≤ 4
+
+
+
+fun = @(x) (x(1)-2)^2 + (x(2)-5)^2;
+
+x0 = [0, 0];
+
+% Constraint: x1 + x2 <= 4
+A = [1, 1];
+b = 4;
+
+x_opt = fmincon(fun, x0, A, b);
+
+disp(['x1 = ', num2str(x_opt(1))])
+disp(['x2 = ', num2str(x_opt(2))])
+% x1+x2 จะได้ประมาณ 4 เพราะถูก constraint บังคับ
